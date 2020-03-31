@@ -1,6 +1,6 @@
 import { createCustomElement } from '@servicenow/ui-core';
 import "../44522-aad-http2";
-// import { createHttpEffect } from '@servicenow/ui-effect-http';
+import { createHttpEffect } from '@servicenow/ui-effect-http';
 import '@servicenow/now-button';
 import snabbdom from '@servicenow/ui-renderer-snabbdom';
 import styles from './styles.scss';
@@ -18,18 +18,20 @@ async function httpEffect(url, options, coeffects) {
 	}
 }
 
-function createHttpEffect(url, options) {
+/*function createHttpEffect(url, options) {
 	return {
 	  effect: httpEffect,
 	  args: [url, options]
 	};
-}
+}*/
 
 //ACTIONS
 const USER_FETCH_SUCCESS = 'USER_FETCH_SUCCESS';
 const FETCH_USER = "FETCH_USER";
 const BUTTON_CLICKED = 'BUTTON_CLICKED';
 const GET_INC = "GET_INC";
+const FETCH_SUCCEEDED = 'FETCH_SUCCEEDED';
+const FETCH_FAILED = 'FETCH_FAILED';
 
 
 //HTTP EFFECT
@@ -54,8 +56,9 @@ const fetchUserEffect = createHttpEffect(endpoint, {
 
 // Handle when user fetch succeeded: log the result
 const handleFetchUserSucceeded = ({action, updateState}) => {
-	var x = action.payload;
-	//console.log(x);
+	var x = action.payload.result;
+	console.log(action.payload.result);
+	console.log("candy " + x);
 	updateState({
 		path: "test",
 		value: x,
@@ -67,7 +70,9 @@ const getIncident = createHttpEffect('/api/now/table/incident?sysparm_limit=1', 
 	method: 'GET',
 	headers: {
 		
-	}
+	},
+	successActionType: FETCH_SUCCEEDED,
+	errorActionType: FETCH_FAILED
 })
 
 const showIncDetails = ({action, updateState}) => {
@@ -101,6 +106,7 @@ const view = (state, {dispatch, updateState}) => {
 
 	return (
 		<div>
+			<x-44522-aad-http2 state='candy'></x-44522-aad-http2>
 			<div><h1>Hello World! Finally, Amirite?</h1></div>
 			<div>
 				<now-button 
@@ -121,14 +127,14 @@ const view = (state, {dispatch, updateState}) => {
 					label="Show a joke" 
 					size="md" 
 					variant="primary" 
-					on-click={getUser}
+					on-click={getInc}
 				/>
 			</div>
 			<div>JOKE: {state.test.joke}</div>
 			{output}
 			<br />
 			<br />
-			<x-44522-aad-http2></x-44522-aad-http2>
+			<x-44522-aad-http2 state='candy'></x-44522-aad-http2>
 			<div>
 				INC Details: {state.inc.number} / {state.inc.sys_id}
 			</div>

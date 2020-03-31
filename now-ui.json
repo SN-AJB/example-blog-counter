@@ -2,6 +2,9 @@
 	"components": {
 	    "44522-aad-example-blog": {
 	        "innerComponents": ["44522-aad-http2"]
+		}, 
+		"44522-aad-http2": {
+			"innerComponents": []
 		}
 	},
 	"scopeName": "x_44522_aad_exam_0"
